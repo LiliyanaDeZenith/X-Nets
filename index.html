@@ -163,6 +163,82 @@ body.nv .bar a.on svg{animation:fxpop .45s cubic-bezier(.2,.9,.3,1.4)}
  addEventListener('scroll',()=>document.body.classList.toggle('scrolled',scrollY>6),{passive:true});
 }catch(e){}})();
 </script>
+ <style id="fx">
+:root{--hv:#0000000a;--rg:#00000040;--gl:#00000016;--gl2:#00000010}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--hv:#ffffff0d;--rg:#ffffff55;--gl:#ffffff1f;--gl2:#ffffff12}}
+:root[data-theme="dark"]{--hv:#ffffff0d;--rg:#ffffff55;--gl:#ffffff1f;--gl2:#ffffff12}
+@media(prefers-reduced-motion:no-preference){
+body{transition:background-color .3s,color .3s}
+#app:empty::before{content:"";position:fixed;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid var(--ln);border-top-color:var(--ink);border-radius:50%;animation:fxspin .8s linear infinite}
+.btn,.sbtn,.li,.ni,.tabs a,.seg a,.ib,.bar a{position:relative;overflow:hidden}
+.rp{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.2;transform:scale(0);animation:fxrp .6s ease-out forwards}
+.btn{transition:transform .15s,box-shadow .2s,opacity .2s,background-color .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px #00000026}
+.btn:active,.sbtn:active{transform:scale(.96)}
+.sbtn{transition:transform .15s,opacity .2s}.sbtn:hover{transform:scale(1.06)}
+.li,.ni,.tabs a,.seg a,.ib{transition:background-color .2s,color .2s}
+.ni svg,.bar svg{transition:transform .2s}.ni:hover svg{transform:translateX(2px) scale(1.1)}.bar a:active svg{transform:scale(.85)}
+article.row{transition:background-color .25s}article.row:hover{background-color:var(--hv)}
+.av,.cav{transition:transform .25s}.li:hover .av,.li:hover .cav,a:hover>.av{transform:scale(1.06)}
+img.med{transition:transform .4s}img.med:hover{transform:scale(1.015)}
+.in{transition:border-color .2s,box-shadow .2s,background-color .2s}.in:focus{box-shadow:0 0 0 4px var(--gl)}
+.top{transition:box-shadow .25s}body.scrolled .top{box-shadow:0 6px 18px #0000001a}
+.pc{transition:transform .25s,box-shadow .25s}.pc:hover{transform:translateY(-4px);box-shadow:0 16px 36px #0000001f}
+.pc.best{position:relative;overflow:hidden}
+.pc.best::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(105deg,transparent,color-mix(in srgb,currentColor 12%,transparent),transparent);transform:skewX(-15deg);animation:fxsheen 5s ease-in-out 1.2s infinite;pointer-events:none}
+.auth{position:relative;overflow:hidden}
+.auth::before,.auth::after{content:"";position:absolute;border-radius:50%;background:radial-gradient(circle,var(--gl2),transparent 65%);pointer-events:none}
+.auth::before{width:70vmax;height:70vmax;left:-25vmax;top:-30vmax;animation:fxdrift 20s ease-in-out infinite alternate}
+.auth::after{width:60vmax;height:60vmax;right:-22vmax;bottom:-28vmax;animation:fxdrift 24s ease-in-out infinite alternate-reverse}
+.auth form{position:relative;z-index:1;animation:fxrise .6s cubic-bezier(.2,.7,.2,1) backwards}
+.lg{animation:fxrise .8s .1s cubic-bezier(.2,.7,.2,1) backwards}
+svg[aria-label="Terverifikasi"]{transform-box:fill-box;transform-origin:center;animation:fxbdg 4.5s ease-in-out infinite}
+.ub{animation:fxping 2.4s ease-out infinite}
+.md,.sc{animation:fxfade .2s}.mb{animation:fxpop .28s cubic-bezier(.2,.9,.3,1.2)}
+.toast{animation:fxtoast .3s cubic-bezier(.2,.9,.3,1.2)}
+#view.enter>*{animation:fxrise .45s cubic-bezier(.2,.7,.2,1) backwards}
+#view.enter>:nth-child(2){animation-delay:.04s}#view.enter>:nth-child(3){animation-delay:.08s}#view.enter>:nth-child(4){animation-delay:.12s}#view.enter>:nth-child(5){animation-delay:.16s}#view.enter>:nth-child(6){animation-delay:.2s}#view.enter>:nth-child(7){animation-delay:.24s}#view.enter>:nth-child(8){animation-delay:.28s}#view.enter>:nth-child(9){animation-delay:.32s}#view.enter>:nth-child(10){animation-delay:.36s}#view.enter>:nth-child(n+11){animation-delay:.4s}
+#view.enter .bn img,#view.enter .bn video{animation:fxzoom 1.4s cubic-bezier(.2,.7,.2,1) backwards}
+#view.enter .bn b{animation:fxrise .7s .2s cubic-bezier(.2,.7,.2,1) backwards}
+#view.enter .pf .av{animation:fxpop .45s .1s cubic-bezier(.2,.9,.3,1.2) backwards}
+body.nv #tt{animation:fxrise .35s backwards}
+body.nv .bar a.on svg{animation:fxpop .45s cubic-bezier(.2,.9,.3,1.4)}
+.bw.pop .bub{animation:fxbub .28s cubic-bezier(.2,.9,.3,1.2) backwards;transform-origin:0 100%}.bw.me.pop .bub{transform-origin:100% 100%}
+.beat svg{animation:fxbeat .5s}
+@keyframes fxspin{to{transform:rotate(360deg)}}
+@keyframes fxrp{to{transform:scale(1);opacity:0}}
+@keyframes fxrise{from{opacity:0;transform:translateY(12px)}}
+@keyframes fxfade{from{opacity:0}}
+@keyframes fxpop{from{opacity:0;transform:scale(.88)}}
+@keyframes fxzoom{from{transform:scale(1.08)}}
+@keyframes fxbub{from{opacity:0;transform:scale(.85) translateY(6px)}}
+@keyframes fxbeat{0%{transform:scale(1)}30%{transform:scale(1.4)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+@keyframes fxbdg{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes fxping{0%{box-shadow:0 0 0 0 var(--rg)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes fxtoast{from{opacity:0;transform:translate(-50%,14px)}}
+@keyframes fxsheen{0%,60%{left:-60%}100%{left:130%}}
+@keyframes fxdrift{to{transform:translate(6vmax,5vmax) scale(1.08)}}
+}
+</style>
+<script id="fx-js">
+(()=>{try{
+ if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ const app=document.getElementById('app');if(!app)return;
+ let last='',lk=null,lkT=0,nvT=0;const cnts=new WeakMap();
+ const cnt=v=>v.querySelectorAll('.stats b').forEach(b=>{const n=parseInt(b.textContent,10);if(!(n>0))return;const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/700);b.textContent=Math.round(n*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0)});
+ new MutationObserver(ms=>{
+  if(!ms.some(m=>m.target.id==='app'||m.target.id==='ml'))return;
+  const v=document.getElementById('view');
+  if(v&&typeof S!=='undefined'){const k=[S.r,S.room,S.p].join('|');if(k!==last){last=k;v.classList.add('enter');document.body.classList.add('nv');clearTimeout(nvT);nvT=setTimeout(()=>document.body.classList.remove('nv'),800);cnt(v)}}else if(!v)last='';
+  const m=document.getElementById('ml');
+  if(m){const all=m.querySelectorAll('.bw'),n=all.length,p=cnts.get(m);if(p!==undefined&&n>p)[...all].slice(p).forEach(x=>x.classList.add('pop'));cnts.set(m,n)}
+  if(lk){const b=document.querySelector('[data-a="like"][data-v="'+lk+'"]');if(b&&b.getAttribute('aria-pressed')==='true')b.classList.add('beat');lk=null}
+ }).observe(app,{childList:true,subtree:true});
+ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-a="like"]');if(b){lk=b.dataset.v;clearTimeout(lkT);lkT=setTimeout(()=>{lk=null},4000)}},true);
+ document.addEventListener('pointerdown',e=>{const t=e.target.closest&&e.target.closest('.btn,.sbtn,.li,.ni,.tabs a,.seg a,.ib,.bar a');if(!t)return;const r=t.getBoundingClientRect(),d=Math.max(r.width,r.height)*2,s=document.createElement('span');s.className='rp';s.style.cssText='width:'+d+'px;height:'+d+'px;left:'+(e.clientX-r.left-d/2)+'px;top:'+(e.clientY-r.top-d/2)+'px';t.appendChild(s);setTimeout(()=>s.remove(),650)},{passive:true});
+ addEventListener('scroll',()=>document.body.classList.toggle('scrolled',scrollY>6),{passive:true});
+}catch(e){}})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const KEY='xnest.v2',DEV='websitescarlett@gmail.com',$=s=>document.querySelector(s);
