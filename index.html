@@ -163,6 +163,28 @@ body.nv .bar a.on svg{animation:fxpop .45s cubic-bezier(.2,.9,.3,1.4)}
  addEventListener('scroll',()=>document.body.classList.toggle('scrolled',scrollY>6),{passive:true});
 }catch(e){}})();
 </script>
+ <script id="dl-js">
+(()=>{
+ const ext=l=>/mp3|audio/i.test(l)?'.mp3':/^\s*foto/i.test(l)?'.jpg':'.mp4',say=t=>{try{toast(t)}catch(e){}};
+ document.addEventListener('click',async e=>{
+  const a=e.target.closest&&e.target.closest('a[download][target="_blank"]');if(!a)return;
+  e.preventDefault();e.stopPropagation();
+  if(a.dataset.busy)return;a.dataset.busy='1';
+  const lab=a.textContent.trim(),href=a.href;
+  try{
+   a.textContent='Mengunduh...';
+   const r=await fetch(href);if(!r.ok)throw new Error(r.status);
+   const tot=+r.headers.get('content-length')||0,rd=r.body.getReader(),ch=[];let got=0;
+   for(;;){const x=await rd.read();if(x.done)break;ch.push(x.value);got+=x.value.length;if(tot)a.textContent='Mengunduh '+Math.round(got/tot*100)+'%'}
+   const u=URL.createObjectURL(new Blob(ch,{type:r.headers.get('content-type')||''})),l=document.createElement('a');
+   l.href=u;l.download='tiktok-'+Date.now()+ext(lab);document.body.appendChild(l);l.click();l.remove();
+   setTimeout(()=>URL.revokeObjectURL(u),60000);say('Unduhan dimulai.');
+  }catch(err){
+   say('Unduh langsung diblokir server, dibuka di tab baru.');window.open(href,'_blank','noopener');
+  }finally{if(a.isConnected)a.textContent=lab;delete a.dataset.busy}
+ },true);
+})();
+ </script>
  <style id="fx">
 :root{--hv:#0000000a;--rg:#00000040;--gl:#00000016;--gl2:#00000010}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--hv:#ffffff0d;--rg:#ffffff55;--gl:#ffffff1f;--gl2:#ffffff12}}
