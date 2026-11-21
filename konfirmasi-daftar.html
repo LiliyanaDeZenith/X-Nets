@@ -1,1 +1,28 @@
-<div style="font-family:Arial,sans-serif;max-width:420px;margin:auto;padding:24px"><h2 style="margin:0 0 8px">X'Nest</h2><p>Kode OTP untuk memverifikasi Gmail kamu:</p><p style="font-size:34px;font-weight:700;letter-spacing:10px;margin:18px 0">{{ .Token }}</p><p style="color:#666;font-size:13px">Kode berlaku 10 menit. Jangan bagikan kode ini ke siapa pun. Abaikan email ini jika kamu tidak mendaftar.</p></div>
+<script>
+  // tempel code JS lu yang ini di sini
+  // 1. Init sekali aja di atas
+emailjs.init("PUBLIC_KEY_LU_DISINI"); // ganti pake Public Key tadi
+
+async function kirimKode() {
+  const email = document.getElementById("email").value;
+  
+  // 2. Bikin kode 4 digit di Supabase
+  const { data: code } = await supabase.rpc("request_code", { email_in: email });
+  
+  // 3. Kirim langsung dari websitescarlett@gmail.com, tanpa server!
+  await emailjs.send("SERVICE_ID_LU", "TEMPLATE_ID_LU", {
+    to_email: email,
+    code: code // misal 4821
+  });
+  
+  alert("Kode 4 digit udah dikirim dari websitescarlett@gmail.com, cek Gmail kamu!");
+}
+
+async function verifikasiKode() {
+  const email = document.getElementById("email").value;
+  const kode = document.getElementById("kode").value;
+  const { data: ok } = await supabase.rpc("verify_code", { email_in: email, code_in: kode });
+  if (ok) alert("Bener! Lanjut daftar.");
+  else alert("Kode salah / kadaluarsa.");
+}
+</script>
