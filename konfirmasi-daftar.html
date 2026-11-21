@@ -1,21 +1,21 @@
 <script>
-  // tempel code JS lu yang ini di sini
-  // 1. Init sekali aja di atas
-emailjs.init("q9JcJnOO17iQOvZpz"); // ganti pake Public Key tadi
+emailjs.init("q9JcJnOO17iQOvZpz");
 
 async function kirimKode() {
   const email = document.getElementById("email").value;
+  if(!email) return alert("Isi email dulu!");
   
-  // 2. Bikin kode 4 digit di Supabase
-  const { data: code } = await supabase.rpc("request_code", { email_in: email });
-  
-  // 3. Kirim langsung dari websitescarlett@gmail.com, tanpa server!
+  // Bikin kode 6 digit di Supabase
+  const { data: code, error } = await supabase.rpc("request_code", { email_in: email });
+  if(error) return alert("Gagal bikin kode: " + error.message);
+
+  // Kirim via EmailJS
   await emailjs.send("service_448sksw", "template_mvi5kya", {
     to_email: email,
-    code: code // misal 4821
+    code: code
   });
   
-  alert("Kode 4 digit udah dikirim dari websitescarlett@gmail.com, cek Gmail kamu!");
+  alert("Kode 6 digit udah dikirim, cek Gmail kamu!");
 }
 
 async function verifikasiKode() {
