@@ -1,7 +1,7 @@
 <script>
   // tempel code JS lu yang ini di sini
   // 1. Init sekali aja di atas
-emailjs.init("PUBLIC_KEY_LU_DISINI"); // ganti pake Public Key tadi
+emailjs.init("q9JcJnOO17iQOvZpz"); // ganti pake Public Key tadi
 
 async function kirimKode() {
   const email = document.getElementById("email").value;
@@ -10,7 +10,7 @@ async function kirimKode() {
   const { data: code } = await supabase.rpc("request_code", { email_in: email });
   
   // 3. Kirim langsung dari websitescarlett@gmail.com, tanpa server!
-  await emailjs.send("SERVICE_ID_LU", "TEMPLATE_ID_LU", {
+  await emailjs.send("service_448sksw", "TEMPLATE_ID_LU", {
     to_email: email,
     code: code // misal 4821
   });
