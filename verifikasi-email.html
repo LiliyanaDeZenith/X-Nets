@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Verifikasi Email · X'Nest</title>
+<style>
+:root{--bg:#fff;--ink:#0a0a0a;--mut:#6b6b6b;--ln:#e4e4e4;--tn:#f5f5f5;--rd:#d32f2f}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--tn);color:var(--ink);display:grid;place-items:center;min-height:100vh;min-height:100dvh;padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom))}
+.card{width:min(420px,100%);background:var(--bg);border:1px solid var(--ln);border-radius:24px;padding:30px 24px;box-shadow:0 20px 60px #0000001a;animation:up .4s cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+.logo{font-size:2.4rem;font-weight:800;letter-spacing:-.06em;line-height:1;text-align:center}
+h1{font-size:1.15rem;margin:14px 0 6px;text-align:center}
+p{margin:0 0 18px;color:var(--mut);font-size:.92rem;line-height:1.5;text-align:center}
+label{display:block;font-size:.8rem;font-weight:700;margin:0 0 6px}
+input.em{width:100%;border:1.5px solid var(--ln);border-radius:14px;padding:14px;font:inherit;background:var(--bg);color:var(--ink);outline:0;transition:border-color .15s,box-shadow .15s}
+input.em:focus,.ob:focus{border-color:var(--ink);box-shadow:0 0 0 3px #0002}
+.btn{width:100%;border:0;border-radius:14px;background:var(--ink);color:#fff;padding:14px;font:inherit;font-weight:700;cursor:pointer;margin-top:14px;transition:transform .1s,opacity .2s}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.g{background:none;color:var(--ink);border:1.5px solid var(--ln);margin-top:10px}
+.boxes{display:flex;gap:6px;justify-content:center;margin:6px 0 12px}
+.ob{width:clamp(38px,12vw,50px);height:clamp(48px,14vw,60px);border:1.5px solid var(--ln);border-radius:12px;text-align:center;font:inherit;font-size:1.5rem;font-weight:700;background:var(--bg);color:var(--ink);outline:0;padding:0;transition:border-color .15s,box-shadow .15s}
+.ob.err{border-color:var(--rd);animation:sh .35s}
+@keyframes sh{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.msg{min-height:1.4em;text-align:center;font-size:.92rem;font-weight:700;margin:2px 0}
+.msg.bad{color:var(--rd)}.msg.ok{color:var(--ink)}
+.sub{text-align:center;color:var(--mut);font-size:.8rem;margin-top:6px}
+.row{display:flex;justify-content:space-between;gap:10px;margin-top:14px;font-size:.85rem}
+.lnk{background:none;border:0;padding:6px 0;font:inherit;color:var(--ink);font-weight:700;cursor:pointer;text-decoration:underline}
+.lnk:disabled{color:var(--mut);text-decoration:none;cursor:default}
+.check{width:76px;height:76px;border-radius:50%;background:var(--ink);display:grid;place-items:center;margin:4px auto 16px;animation:pop .45s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{from{transform:scale(.5);opacity:0}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="logo">X'Nest</div>
+
+  <!-- Langkah 1: masukkan email -->
+  <form id="fSend" novalidate>
+    <h1>Verifikasi Email</h1>
+    <p>Masukkan email kamu. Kami kirim kode 6 digit untuk memastikan email itu milikmu.</p>
+    <label for="email">Email</label>
+    <input class="em" id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="nama@gmail.com" required>
+    <div class="msg bad" id="m1" role="alert"></div>
+    <button class="btn" id="bSend">Kirim Kode</button>
+  </form>
+
+  <!-- Langkah 2: masukkan 6 digit kode -->
+  <form id="fVerify" hidden novalidate>
+    <h1>Masukkan Kode</h1>
+    <p>Kode 6 digit dikirim ke <b id="tujuan"></b>. Cek kotak masuk atau folder spam.</p>
+    <div class="boxes" id="boxes">
+      <input class="ob" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
+      <input class="ob" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 2">
+      <input class="ob" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 3">
+      <input class="ob" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 4">
+      <input class="ob" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 5">
+      <input class="ob" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 6">
+    </div>
+    <div class="msg" id="m2" role="alert"></div>
+    <div class="sub" id="berlaku"></div>
+    <button class="btn" id="bVerify">Verifikasi</button>
+    <div class="row">
+      <button type="button" class="lnk" id="bResend" disabled>Kirim Ulang Kode (60)</button>
+      <button type="button" class="lnk" id="bBack">Ganti email</button>
+    </div>
+  </form>
+
+  <!-- Langkah 3: berhasil -->
+  <section id="ok" hidden>
+    <div class="check"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h1 id="okTitle">Verifikasi Berhasil</h1>
+    <p id="okEmail"></p>
+    <button class="btn g" id="bAgain" type="button">Verifikasi email lain</button>
+  </section>
+</main>
+
+<script>
+/* =====================================================================
+   VERIFIKASI EMAIL 6 DIGIT (EmailJS) - 1 file, siap copy-paste
+   CATATAN KEAMANAN: kode dibuat dan dicek di browser. Ini cocok untuk UX
+   (memastikan email tidak asal ketik), tapi orang yang paham teknis bisa
+   melewatinya. Untuk keamanan sungguhan, kode harus dicek di server.
+   ===================================================================== */
+const CONFIG = {
+  serviceId : 'service_448sksw',
+  templateId: 'template_mvi5kya',
+  publicKey : 'q9JcjnO017iQOvZpz',
+  fromName  : "X'Nest",
+  ttl       : 10 * 60 * 1000,  // kode berlaku 10 menit
+  resendWait: 60,              // detik sebelum boleh kirim ulang
+  maxTry    : 5                // maksimal salah memasukkan kode
+};
+const $ = s => document.querySelector(s);
+const boxes = () => [...document.querySelectorAll('.ob')];
+let st = { email: '', hash: '', exp: 0, sentAt: 0, tries: 0, timer: 0 };
+
+/* 1) Buat kode 6 digit acak, contoh: 482917 */
+function generateCode() {
+  const a = new Uint32Array(1), lim = 4294967296 - 4294967296 % 900000;
+  let v; do { crypto.getRandomValues(a); v = a[0]; } while (v >= lim);
+  return String(100000 + v % 900000);
+}
+async function sha(s) {
+  try {
+    const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+  } catch (e) { return s; }
+}
+function pesanError(status, teks) {
+  if (/public key/i.test(teks)) return 'Public Key EmailJS salah.';
+  if (/template/i.test(teks)) return 'Template EmailJS tidak ditemukan.';
+  if (status === 429) return 'Terlalu sering mengirim. Coba lagi sebentar lagi.';
+  return 'Email gagal dikirim (' + status + '). Cek pengaturan EmailJS.';
+}
+
+/* 2) Kirim kode ke email user lewat EmailJS
+      parameter: to_email, verification_code, from_name */
+async function kirimKode(email) {
+  const code = generateCode();
+  const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      service_id: CONFIG.serviceId,
+      template_id: CONFIG.templateId,
+      user_id: CONFIG.publicKey,
+      template_params: { to_email: email, verification_code: code, from_name: CONFIG.fromName }
+    })
+  });
+  if (!res.ok) throw new Error(pesanError(res.status, await res.text().catch(() => '')));
+  st.email = email; st.hash = await sha(code);
+  st.exp = Date.now() + CONFIG.ttl; st.sentAt = Date.now(); st.tries = 0;
+}
+
+/* 4) Cek kode yang dimasukkan */
+async function cekKode(input) {
+  if (Date.now() > st.exp) return { ok: false, msg: 'Kode kedaluwarsa. Kirim ulang kode.' };
+  if (st.tries >= CONFIG.maxTry) return { ok: false, msg: 'Terlalu banyak percobaan. Kirim ulang kode.' };
+  if (await sha(input) === st.hash) return { ok: true };
+  st.tries++;
+  return { ok: false, msg: 'Kode Salah' };
+}
+
+/* 5) dan 6) Hitung mundur kirim ulang + masa berlaku */
+function tick() {
+  const sisa = Math.max(0, CONFIG.resendWait - Math.floor((Date.now() - st.sentAt) / 1000));
+  const b = $('#bResend');
+  b.disabled = sisa > 0;
+  b.textContent = sisa > 0 ? 'Kirim Ulang Kode (' + sisa + ')' : 'Kirim Ulang Kode';
+  const l = Math.max(0, Math.ceil((st.exp - Date.now()) / 1000));
+  $('#berlaku').textContent = l > 0 ? 'Kode berlaku ' + Math.floor(l / 60) + ':' + String(l % 60).padStart(2, '0') : 'Kode kedaluwarsa';
+}
+function mulaiTimer() { clearInterval(st.timer); tick(); st.timer = setInterval(tick, 1000); }
+function tampil(id) { for (const x of ['fSend', 'fVerify', 'ok']) $('#' + x).hidden = x !== id; }
+function pesan(el, t, kelas) { el.textContent = t; el.className = 'msg ' + (kelas || ''); }
+function kosongkan(salah) { boxes().forEach(b => { b.value = ''; b.classList.toggle('err', !!salah); }); boxes()[0].focus(); }
+
+/* Event: kirim kode */
+$('#fSend').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = $('#email').value.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return pesan($('#m1'), 'Email tidak valid.', 'bad');
+  const b = $('#bSend'); b.disabled = true; b.textContent = 'Mengirim...'; pesan($('#m1'), '');
+  try {
+    await kirimKode(email);
+    $('#tujuan').textContent = email; pesan($('#m2'), '');
+    tampil('fVerify'); kosongkan(); mulaiTimer();
+  } catch (err) { pesan($('#m1'), err.message, 'bad'); }
+  b.disabled = false; b.textContent = 'Kirim Kode';
+});
+
+/* Event: verifikasi */
+$('#fVerify').addEventListener('submit', async e => {
+  e.preventDefault();
+  const kode = boxes().map(b => b.value).join('');
+  if (kode.length !== 6) return pesan($('#m2'), 'Masukkan 6 digit kode.', 'bad');
+  const r = await cekKode(kode);
+  if (!r.ok) { pesan($('#m2'), r.msg, 'bad'); kosongkan(true); return; }
+  clearInterval(st.timer);
+  $('#okEmail').textContent = st.email; tampil('ok');
+  if (typeof window.onEmailVerified === 'function') window.onEmailVerified(st.email); // hook untuk kodemu
+});
+
+/* Event: kirim ulang, ganti email, ulangi */
+$('#bResend').addEventListener('click', async () => {
+  const b = $('#bResend'); b.disabled = true; b.textContent = 'Mengirim...';
+  try { await kirimKode(st.email); pesan($('#m2'), 'Kode baru dikirim.', 'ok'); kosongkan(); }
+  catch (err) { pesan($('#m2'), err.message, 'bad'); }
+  mulaiTimer();
+});
+$('#bBack').addEventListener('click', () => { clearInterval(st.timer); tampil('fSend'); });
+$('#bAgain').addEventListener('click', () => { $('#email').value = ''; st = { email: '', hash: '', exp: 0, sentAt: 0, tries: 0, timer: 0 }; tampil('fSend'); });
+
+/* 3) Perilaku 6 kotak: pindah otomatis, hapus mundur, tempel kode, kirim otomatis */
+document.addEventListener('input', e => {
+  const t = e.target; if (!t.classList.contains('ob')) return;
+  t.value = t.value.replace(/\D/g, '').slice(-1); t.classList.remove('err');
+  if (t.value && t.nextElementSibling) t.nextElementSibling.focus();
+  if (boxes().every(b => b.value)) $('#fVerify').requestSubmit ? $('#fVerify').requestSubmit() : $('#fVerify').dispatchEvent(new Event('submit', { cancelable: true }));
+});
+document.addEventListener('keydown', e => {
+  const t = e.target; if (!t.classList || !t.classList.contains('ob')) return;
+  if (e.key === 'Backspace' && !t.value && t.previousElementSibling) { t.previousElementSibling.focus(); t.previousElementSibling.value = ''; }
+  else if (e.key === 'ArrowLeft' && t.previousElementSibling) t.previousElementSibling.focus();
+  else if (e.key === 'ArrowRight' && t.nextElementSibling) t.nextElementSibling.focus();
+});
+document.addEventListener('paste', e => {
+  const t = e.target; if (!t.classList || !t.classList.contains('ob')) return;
+  e.preventDefault();
+  const d = String((e.clipboardData || window.clipboardData).getData('text')).replace(/\D/g, '').slice(0, 6), bs = boxes();
+  bs.forEach((b, i) => { b.value = d[i] || ''; b.classList.remove('err'); });
+  bs[Math.min(d.length, 5)].focus();
+  if (d.length === 6) $('#fVerify').requestSubmit ? $('#fVerify').requestSubmit() : $('#fVerify').dispatchEvent(new Event('submit', { cancelable: true }));
+});
+</script>
+</body>
+</html>
